@@ -1,0 +1,67 @@
+<header class="page-head">
+  <div>
+    <h1>Ledger</h1>
+    <p class="muted">Every posting to a single account, with a running balance.</p>
+  </div>
+
+  <label class="picker">
+    <span class="muted">Account</span>
+    <select #sel (change)="select(sel.value)">
+      <option value="" [selected]="!accountId()" disabled>Choose an account…</option>
+      @for (account of accountOptions(); track account.id) {
+        <option [value]="account.id" [selected]="account.id === accountId()">
+          {{ account.code }} · {{ account.name }}
+        </option>
+      }
+    </select>
+  </label>
+</header>
+
+@let acc = account();
+
+@if (!acc) {
+  <div class="card empty">
+    <p class="muted">Pick an account above to view its ledger.</p>
+  </div>
+} @else {
+  <section class="card account-head">
+    <div>
+      <h2>{{ acc.code }} · {{ acc.name }}</h2>
+      <span class="tag">{{ typeLabel[acc.type] }}</span>
+      <span class="muted normal-side">Normal balance: {{ normalSide[acc.type] }}</span>
+    </div>
+    <div class="closing">
+      <span class="muted">Closing balance</span>
+      <strong>{{ closingBalance() | money }}</strong>
+    </div>
+  </section>
+
+  <section class="card">
+    @if (rows().length === 0) {
+      <p class="muted">No postings to this account yet.</p>
+    } @else {
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Memo</th>
+            <th class="num">Debit</th>
+            <th class="num">Credit</th>
+            <th class="num">Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows(); track $index) {
+            <tr>
+              <td class="muted">{{ row.date }}</td>
+              <td>{{ row.memo }}</td>
+              <td class="num debit">{{ row.debit ? (row.debit | money) : '' }}</td>
+              <td class="num credit">{{ row.credit ? (row.credit | money) : '' }}</td>
+              <td class="num">{{ row.runningBalance | money }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+}

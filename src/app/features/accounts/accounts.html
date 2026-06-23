@@ -1,0 +1,70 @@
+<header class="page-head">
+  <div>
+    <h1>Chart of accounts</h1>
+    <p class="muted">The buckets every transaction posts into.</p>
+  </div>
+</header>
+
+<section class="card">
+  <h2>Add an account</h2>
+  <form class="account-form" [formGroup]="form" (ngSubmit)="submit()">
+    <label class="field">
+      <span>Code</span>
+      <input formControlName="code" placeholder="1000" inputmode="numeric" />
+      @if (form.controls.code.touched && form.controls.code.invalid) {
+        <small class="error">3–6 digit code required.</small>
+      }
+    </label>
+
+    <label class="field field--grow">
+      <span>Name</span>
+      <input formControlName="name" placeholder="Cash" />
+      @if (form.controls.name.touched && form.controls.name.invalid) {
+        <small class="error">Enter a name.</small>
+      }
+    </label>
+
+    <label class="field">
+      <span>Type</span>
+      <select formControlName="type">
+        @for (type of types; track type) {
+          <option [value]="type">{{ typeLabel[type] }}</option>
+        }
+      </select>
+    </label>
+
+    <button class="btn btn--primary" type="submit" [disabled]="form.invalid">Add account</button>
+  </form>
+</section>
+
+@for (group of groups(); track group.type) {
+  <section class="card">
+    <h2>{{ group.label }}</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Name</th>
+          <th class="num">Balance</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of group.rows; track row.id) {
+          <tr>
+            <td class="muted">{{ row.code }}</td>
+            <td>
+              <a class="link" [routerLink]="['/ledger', row.id]">{{ row.name }}</a>
+            </td>
+            <td class="num">{{ row.balance | money }}</td>
+            <td class="num">
+              <button class="btn btn--ghost btn--sm" type="button" (click)="remove(row.id)">
+                Delete
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </section>
+}

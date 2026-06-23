@@ -1,0 +1,27 @@
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand__mark">₿</span>
+      <span class="brand__name">{{ title }}</span>
+    </div>
+
+    <nav class="nav">
+      @for (item of nav; track item.path) {
+        <a
+          class="nav__link"
+          [routerLink]="item.path"
+          routerLinkActive="nav__link--active"
+        >
+          <span class="nav__icon">{{ item.icon }}</span>
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+
+    <p class="sidebar__note">Double-entry bookkeeping · stored in your browser</p>
+  </aside>
+
+  <main class="content">
+    <router-outlet />
+  </main>
+</div>

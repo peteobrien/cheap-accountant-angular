@@ -1,0 +1,56 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.page-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  span {
+    font-size: 0.8rem;
+  }
+
+  select {
+    min-width: 240px;
+  }
+}
+
+.empty {
+  padding: 2rem;
+  text-align: center;
+}
+
+.account-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.normal-side {
+  margin-left: 0.6rem;
+  font-size: 0.85rem;
+}
+
+.closing {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  strong {
+    font-size: 1.6rem;
+    font-variant-numeric: tabular-nums;
+  }
+}

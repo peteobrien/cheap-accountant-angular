@@ -1,0 +1,101 @@
+<header class="page-head">
+  <div>
+    <h1>Dashboard</h1>
+    <p class="muted">A live overview of your books.</p>
+  </div>
+  <a class="btn btn--primary" routerLink="/journal">+ New entry</a>
+</header>
+
+<section class="kpis">
+  <div class="card kpi">
+    <span class="kpi__label">Total debits</span>
+    <span class="kpi__value debit">{{ totals().debits | money }}</span>
+  </div>
+  <div class="card kpi">
+    <span class="kpi__label">Total credits</span>
+    <span class="kpi__value credit">{{ totals().credits | money }}</span>
+  </div>
+  <div class="card kpi">
+    <span class="kpi__label">Books status</span>
+    @if (isBalanced()) {
+      <span class="kpi__value positive">● In balance</span>
+    } @else {
+      <span class="kpi__value negative">● Out of balance</span>
+    }
+  </div>
+  <div class="card kpi">
+    <span class="kpi__label">Accounts / Entries</span>
+    <span class="kpi__value">{{ accountCount() }} / {{ entryCount() }}</span>
+  </div>
+</section>
+
+<section class="card">
+  <h2>Trial balance</h2>
+  <p class="muted">Debit and credit columns should total to the same amount.</p>
+
+  @if (activeBalances().length === 0) {
+    <p class="muted empty">No postings yet. Record your first journal entry.</p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Account</th>
+          <th>Type</th>
+          <th class="num">Debit</th>
+          <th class="num">Credit</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of activeBalances(); track row.account.id) {
+          <tr>
+            <td class="muted">{{ row.account.code }}</td>
+            <td>
+              <a class="link" [routerLink]="['/ledger', row.account.id]">{{ row.account.name }}</a>
+            </td>
+            <td><span class="tag">{{ typeLabel[row.account.type] }}</span></td>
+            <td class="num debit">{{ row.debits ? (row.debits | money) : '' }}</td>
+            <td class="num credit">{{ row.credits ? (row.credits | money) : '' }}</td>
+          </tr>
+        }
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3"><strong>Totals</strong></td>
+          <td class="num debit"><strong>{{ totals().debits | money }}</strong></td>
+          <td class="num credit"><strong>{{ totals().credits | money }}</strong></td>
+        </tr>
+      </tfoot>
+    </table>
+  }
+</section>
+
+<section class="card">
+  <div class="section-head">
+    <h2>Recent entries</h2>
+    <a class="link" routerLink="/journal">View all →</a>
+  </div>
+
+  @for (entry of recent(); track entry.id) {
+    <div class="entry-row">
+      <div>
+        <div class="entry-row__memo">{{ entry.memo }}</div>
+        <div class="muted entry-row__date">{{ entry.date }}</div>
+      </div>
+      <div class="entry-row__lines">
+        @for (line of entry.lines; track $index) {
+          <span class="chip">
+            {{ accountName(line.accountId) }}
+            @if (line.debit) {
+              <span class="debit">Dr {{ line.debit | money }}</span>
+            } @else {
+              <span class="credit">Cr {{ line.credit | money }}</span>
+            }
+          </span>
+        }
+      </div>
+    </div>
+  } @empty {
+    <p class="muted empty">Nothing recorded yet.</p>
+  }
+</section>
